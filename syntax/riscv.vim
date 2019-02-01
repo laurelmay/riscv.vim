@@ -19,7 +19,10 @@ syntax match  riscvLabel /\w\+:/ contains=risvLabelColon
 
 " Registers
 " Numbered registers
-syntax match riscvRegister /x([0-9]|[1-2][0-9]|3[0-1]/
+syntax match   riscvRegister /x[0-9]/
+syntax match   riscvRegister /x[1-2][0-9]/
+syntax match   riscvRegister /x3[0-1]/
+
 " Symbolic register names
 syntax keyword riscvRegister zero ra sp gp tp fp
 syntax match   riscvRegister /a[0-7]/
