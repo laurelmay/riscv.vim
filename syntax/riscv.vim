@@ -1,4 +1,4 @@
-" Maintainer: Kyle Laker
+" Maintainer: Kyle Laker <kyle@laker.email>
 " Last Change: 2019 Feb 1
 
 if exists("b:current_syntax")
@@ -19,16 +19,15 @@ syntax match  riscvLabel /\w\+:/ contains=risvLabelColon
 
 " Registers
 " Numbered registers
-syntax match   riscvRegister /x[0-9]/
-syntax match   riscvRegister /x[1-2][0-9]/
-syntax match   riscvRegister /x3[0-1]/
+syntax match   riscvRegister /\<x[0-9]\>/
+syntax match   riscvRegister /\<x[1-2][0-9]\>/
+syntax match   riscvRegister /\<x3[0-1]\>/
 
 " Symbolic register names
-syntax keyword riscvRegister zero ra sp gp tp fp
-syntax match   riscvRegister /a[0-7]/
-syntax match   riscvRegister /t[0-6]/
-syntax match   riscvRegister /s[0-9]/
-syntax match   riscvRegister /s1[0-1]/
+syntax keyword riscvRegister zero ra sp gp tp fp pc
+syntax keyword riscvRegister a0 a1 a2 a3 a4 a5 a6 a7
+syntax keyword riscvRegister t0 t1 t2 t3 t4 t5 t6
+syntax keyword riscvReigster s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11
 
 " Assembler directives
 syntax match riscvDirective "\.data"
