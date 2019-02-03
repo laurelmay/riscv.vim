@@ -101,7 +101,7 @@ syntax keyword riscvInstruction not neg negw
 syntax match   riscvInstruction "sext\.w"
 syntax keyword riscvInstruction seqz snez sltz sgtz
 syntax keyword riscvInstruction beqz bnez blez bgtz bgt ble bgtu bleu
-syntax keyword riscvInstruction j jr ret
+syntax keyword riscvInstruction j jr ret call
 
 hi def link riscvComment        Comment
 hi def link riscvNumber         Number
