@@ -26,6 +26,7 @@ syntax keyword riscvRegister zero ra sp gp tp fp pc
 syntax keyword riscvRegister a0 a1 a2 a3 a4 a5 a6 a7
 syntax keyword riscvRegister t0 t1 t2 t3 t4 t5 t6
 syntax keyword riscvRegister s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11
+syntax keyword riscvRegister mepc mscratch mtvec mstatus mcause mie mpie mtval mip mpp
 
 " Assembler directives
 syntax match riscvDirective "\.data"
@@ -64,11 +65,11 @@ syntax keyword riscvInstruction scall sbreak
 " counters
 syntax keyword riscvInstruction rdcycle rdcycleh rdtime rdtimeh rdinstret rdinstreth
 " csr access
-syntax keyword riscvInstruction csrrw csrrs csrrc csrrwi csrrsi csrrci
+syntax keyword riscvInstruction csrrw csrrs csrrc csrrwi csrrsi csrrci csrr csrw
 " change level
 syntax keyword riscvInstruction ecall ebreak eret
 " trap redirect
-syntax keyword riscvInstruction mrts mrth hrts
+syntax keyword riscvInstruction mrts mrth hrts mret
 " interrupt
 syntax keyword riscvInstruction wfi
 " mmu
