@@ -1,5 +1,5 @@
 " Maintainer: Kyle Laker <kyle@laker.email>
-" Last Change: 2019 Feb 1
+" Last Change: 2020 Jul 11
 
 if exists("b:current_syntax")
     finish
@@ -8,14 +8,16 @@ endif
 setlocal iskeyword+=-
 syntax case match
 
-syntax match  riscvComment /#.*/
+syntax match   riscvComment    /#.*/
+syntax match   riscvTodo       /\v\c<(fix(me)?|note[s]?|todo|issue|bug|task)[:]?/ containedin=.*Comment
 " Decimal numbers
-syntax match  riscvNumber  /\<[-]\?\d\+\>/
+syntax match   riscvNumber     /\<[-]\?\d\+\>/
 " Hex numbers
-syntax match  riscvNumber  /\<-\?0\(x\|X\)[0-9a-fA-F]\+\>/
-syntax region riscvString  start=/"/ skip=/\\"/ end=/"/
-syntax match  riscvLabelColol /:/ contained
-syntax match  riscvLabel /\w\+:/ contains=risvLabelColon
+syntax match   riscvNumber     /\<-\?0\(x\|X\)[0-9a-fA-F]\+\>/
+syntax region  riscvString     start=/"/ skip=/\\"/ end=/"/
+syntax region  riscvChar       start=/'/ skip=/\\'/ end=/'/
+syntax match   riscvLabelColon /:/ contained
+syntax match   riscvLabel      /\w\+:/ contains=riscvLabelColon
 
 " Registers
 " Numbered registers
@@ -29,16 +31,47 @@ syntax keyword riscvRegister s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11
 syntax keyword riscvRegister mepc mscratch mtvec mstatus mcause mie mpie mtval mip mpp
 
 " Assembler directives
-syntax match riscvDirective "\.data"
-syntax match riscvDirective "\.text"
-syntax match riscvDirective "\.byte"
-syntax match riscvDirective "\.asciiz"
-syntax match riscvDirective "\.word"
-syntax match riscvDirective "\.globl"
-syntax match riscvDirective "\.float"
-syntax match riscvDirective "\.double"
-syntax match riscvDirective "\.align"
-syntax match riscvDirective "\.string"
+syntax match riscvDirective /\.align/
+syntax match riscvDirective /\.file/
+syntax match riscvDirective /\.globl/
+syntax match riscvDirective /\.local/
+syntax match riscvDirective /\.comm/
+syntax match riscvDirective /\.common/
+syntax match riscvDirective /\.ident/
+syntax match riscvDirective /\.section/
+syntax match riscvDirective /\.size/
+syntax match riscvDirective /\.text/
+syntax match riscvDirective /\.data/
+syntax match riscvDirective /\.rodata/
+syntax match riscvDirective /\.bss/
+syntax match riscvDirective /\.string/
+syntax match riscvDirective /\.asciz/
+syntax match riscvDirective /\.equ/
+syntax match riscvDirective /\.macro/
+syntax match riscvDirective /\.endm/
+syntax match riscvDirective /\.type/
+syntax match riscvDirective /\.option/
+syntax match riscvDirective /\.byte/
+syntax match riscvDirective /\.2byte/
+syntax match riscvDirective /\.half/
+syntax match riscvDirective /\.short/
+syntax match riscvDirective /\.4byte/
+syntax match riscvDirective /\.word/
+syntax match riscvDirective /\.long/
+syntax match riscvDirective /\.8byte/
+syntax match riscvDirective /\.dword/
+syntax match riscvDirective /\.quad/
+syntax match riscvDirective /\.skip/
+syntax match riscvDirective /\.dtprelword/
+syntax match riscvDirective /\.dtpreldword/
+syntax match riscvDirective /\.sleb128/
+syntax match riscvDirective /\.uleb128/
+syntax match riscvDirective /\.p2align/
+syntax match riscvDirective /\.balign/
+syntax match riscvDirective /\.zero/
+syntax match riscvDirective /\.global/
+syntax match riscvDirective /\.float/
+syntax match riscvDirective /\.double/
 
 " Instructions
 " loads
@@ -94,17 +127,30 @@ syntax match   riscvInstruction "amomax\.w"
 syntax match   riscvInstruction "amominu\.w"
 syntax match   riscvInstruction "amomaxu\.w"
 
+" RV64I
+" load and store
+syntax keyword riscvInstruction lwu ld sd
+" shift
+syntax keyword riscvInstruction sllw srlw sraw slliw srliw sraiw
+" add / sub
+syntax keyword riscvInstruction addw subw addiw
+
+" RV64M
+syntax keyword riscvInstruction mulw divw divuw remw remuw
+
 " pseudo-instructions
 syntax keyword riscvInstruction nop li la mv
 syntax keyword riscvInstruction not neg negw
 syntax match   riscvInstruction "sext\.w"
 syntax keyword riscvInstruction seqz snez sltz sgtz
-syntax keyword riscvInstruction beqz bnez blez bgtz bgt ble bgtu bleu
+syntax keyword riscvInstruction beqz bnez blez bgtz bgt ble bgtu bleu bgez bltz
 syntax keyword riscvInstruction j jr ret call
 
 hi def link riscvComment        Comment
+hi def link riscvTodo           Todo
 hi def link riscvNumber         Number
 hi def link riscvString         String
+hi def link riscvChar           String
 hi def link riscvRegister       Identifier
 hi def link riscvLabel          Label
 hi def link riscvDirective      Type
