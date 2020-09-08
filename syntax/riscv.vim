@@ -296,7 +296,7 @@ hi def link riscvNumber         Number
 hi def link riscvString         String
 hi def link riscvChar           String
 hi def link riscvRegister       Identifier
-hi def link riscvCSRegister     Todo
+hi def link riscvCSRegister     Identifier
 hi def link riscvLabel          Label
 hi def link riscvDirective      Type
 hi def link riscvInstruction    Statement
