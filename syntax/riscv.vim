@@ -1,9 +1,9 @@
 " Maintainer: Kyle Laker <kyle@laker.email>
 " Last Change: 2020 Jul 11
 
-"if exists("b:current_syntax")
-"    finish
-"endif
+if exists("b:current_syntax")
+    finish
+endif
 
 setlocal iskeyword+=-
 syntax case match
