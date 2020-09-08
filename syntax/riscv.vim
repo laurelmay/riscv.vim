@@ -2,10 +2,10 @@
 " Last Change: 2020 Jul 11
 
 if exists("b:current_syntax")
-    finish
+    syntax clear
 endif
 
-setlocal iskeyword+=-
+setlocal iskeyword+=-,$
 syntax case match
 
 syntax match   riscvComment    /#.*/
@@ -47,14 +47,13 @@ syntax keyword riscvCSRegister sscratch sepc scause stval sip satp mvendorid
 syntax keyword riscvCSRegister marchid mimpid mhartid mstatus misa medeleg
 syntax keyword riscvCSRegister mideleg mie mtvec mcounteren mscratch mepc
 syntax keyword riscvCSRegister mcause mtval mip
-syntax match   riscvCSRegister /\<pmpcfg[0-3]>/
-syntax match   riscvCSRegister /\<[0-3]>/
-syntax match   riscvCSRegister /\<pmpaddr\([0-9]\|1[0-5]\)h\>/
+syntax match   riscvCSRegister /\<pmpcfg[0-3]\>/
+syntax match   riscvCSRegister /\<pmpaddr\([0-9]\|1[0-5]\)\>/
 syntax keyword riscvCSRegister mcycle minstret
 syntax match   riscvCSRegister /\<mhpmcounter\([3-9]\|[1-2][0-9]\|3[0-1]\)\>/
 syntax keyword riscvCSRegister mcycleh minstreth
 syntax match   riscvCSRegister /\<mhpmcounter\([3-9]\|[1-2][0-9]\|3[0-1]\)h\>/
-syntax match   riscvCSRegister /\<mhpmevent\([3-9]\|[1-2][0-9]\|3[0-1]\)h\>/
+syntax match   riscvCSRegister /\<mhpmevent\([3-9]\|[1-2][0-9]\|3[0-1]\)\>/
 syntax keyword riscvCSRegister tselect
 syntax match   riscvCSRegister /\<tdata[1-3]\>/
 syntax keyword riscvCSRegister dcsr dpc dscratch
@@ -271,6 +270,39 @@ syntax match   riscvInstruction "fcvt\.d\.l"
 syntax match   riscvInstruction "fcvt\.d\.lu"
 syntax match   riscvInstruction "fmv\.d\.x"
 
+" Q extension
+syntax keyword riscvInstruction flq fsq
+syntax match   riscvInstruction "fmadd\.q"
+syntax match   riscvInstruction "fmsub\.q"
+syntax match   riscvInstruction "fnmsub\.q"
+syntax match   riscvInstruction "fnmadd\.q"
+syntax match   riscvInstruction "fadd\.q"
+syntax match   riscvInstruction "fsub\.q"
+syntax match   riscvInstruction "fmul\.q"
+syntax match   riscvInstruction "fdiv\.q"
+syntax match   riscvInstruction "fsqrt\.q"
+syntax match   riscvInstruction "fsgnj\.q"
+syntax match   riscvInstruction "fsgnjn\.q"
+syntax match   riscvInstruction "fsgnjx\.q"
+syntax match   riscvInstruction "fmin\.q"
+syntax match   riscvInstruction "fmax\.q"
+syntax match   riscvInstruction "fcvt\.s\.q"
+syntax match   riscvInstruction "fcvt\.q\.s"
+syntax match   riscvInstruction "fcvt\.d\.q"
+syntax match   riscvInstruction "fcvt\.q\.d"
+syntax match   riscvInstruction "feq\.q"
+syntax match   riscvInstruction "flt\.q"
+syntax match   riscvInstruction "fle\.q"
+syntax match   riscvInstruction "fclass\.d"
+syntax match   riscvInstruction "fcvt\.w\.q"
+syntax match   riscvInstruction "fcvt\.wu\.q"
+syntax match   riscvInstruction "fcvt\.q\.w"
+syntax match   riscvInstruction "fcvt\.q\.wu"
+syntax match   riscvInstruction "fcvt\.l\.q"
+syntax match   riscvInstruction "fcvt\.lu\.q"
+syntax match   riscvInstruction "fcvt\.q\.l"
+syntax match   riscvInstruction "fcvt\.q\.lu"
+
 " RV64I
 " load and store
 syntax keyword riscvInstruction lwu ld sd
@@ -295,10 +327,10 @@ hi def link riscvTodo           Todo
 hi def link riscvNumber         Number
 hi def link riscvString         String
 hi def link riscvChar           String
-hi def link riscvRegister       Identifier
-hi def link riscvCSRegister     Identifier
+hi def link riscvRegister       Type
+hi def link riscvCSRegister     Function
 hi def link riscvLabel          Label
-hi def link riscvDirective      Type
-hi def link riscvInstruction    Statement
+hi def link riscvDirective      Preproc
+hi def link riscvInstruction    Keyword
 
 let b:current_syntax = "riscv"
