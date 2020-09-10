@@ -5,7 +5,7 @@ if exists("b:current_syntax")
     syntax clear
 endif
 
-setlocal iskeyword+=-,$
+setlocal iskeyword+=-,$,.
 syntax case match
 
 syntax match   riscvComment    /#.*/
