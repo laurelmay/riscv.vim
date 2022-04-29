@@ -8,7 +8,7 @@ endif
 setlocal iskeyword+=-,$,.
 syntax case match
 
-syntax match   riscvComment    /#.*/
+syntax match   riscvComment    /\(#\|\/\/\).*/
 syntax match   riscvTodo       /\v\c<(fix(me)?|note[s]?|todo|issue|bug|task)[:]?/ containedin=.*Comment
 " Decimal numbers
 syntax match   riscvNumber     /\<[-]\?\d\+\>/
