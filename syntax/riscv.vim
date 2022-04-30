@@ -1,5 +1,7 @@
 " Maintainer: Kyle Laker <kyle@laker.email>
-" Last Change: 2020 Jul 11
+" Last Change: 2022 Apr 30
+" Based on Unprivileged ISA document version 20191213 and Privileged ISA
+" document version 20211203.
 
 if exists("b:current_syntax")
     syntax clear
@@ -8,6 +10,7 @@ endif
 setlocal iskeyword+=-,$,.
 syntax case match
 
+" Accept single-line comments (starting with # or //) and multi-line comments (within a /* */)
 syntax match   riscvComment    /\(#\|\/\/\).*/
 syntax region  riscvComment    start=/\/\*/ end=/\*\//
 syntax match   riscvTodo       /\v\c<(fix(me)?|note[s]?|todo|issue|bug|task)[:]?/ containedin=.*Comment
@@ -22,290 +25,191 @@ syntax match   riscvLabel      /\w\+:/ contains=riscvLabelColon
 
 " Registers
 " Numbered registers
-syntax match   riscvRegister /\<x\([1-2]?[0-9]\|3[0-1]\)\>/
+syntax match   riscvRegister /\<x\([1-2]\?[0-9]\|3[0-1]\)\>/
 " Including floating-point ones
-syntax match   riscvRegister /\<f\([1-2]?[0-9]\|3[0-1]\)\>/
+syntax match   riscvRegister /\<f\([1-2]\?[0-9]\|3[0-1]\)\>/
 
 " psABI
 " Symbolic register names
 syntax keyword riscvRegister zero ra sp gp tp fp pc
-syntax keyword riscvRegister a0 a1 a2 a3 a4 a5 a6 a7
-syntax keyword riscvRegister t0 t1 t2 t3 t4 t5 t6
-syntax keyword riscvRegister s0 s1 s2 s3 s4 s5 s6 s7 s8 s9 s10 s11
+syntax match   riscvRegister /\<a[0-7]\>/
+syntax match   riscvRegister /\<t[0-6]\>/
+syntax match   riscvRegister /\<s\([0-9]\|1[01]\)\>/
 " Including floating-point ones
-syntax keyword riscvRegister ft0 ft1 ft2 ft3 ft4 ft5 ft6 ft7 ft8 ft9 ft10 ft11
-syntax keyword riscvRegister fs0 fs1 fs2 fs3 fs4 fs5 fs6 fs7 fs8 fs9 fs10 fs11
-syntax keyword riscvRegister fa0 fa1 fa2 fa3 fa4 fa5 fa6 fa7
+syntax match   riscvRegister /\<f[st]\([0-9]\|1[01]\)\>/
+syntax match   riscvRegister /\<fa[0-7]\>/
 
-" Control/Status registers
-syntax keyword riscvCSRegister ustatus uie utvec uscratch uepc ucause utval uip
-syntax keyword riscvCSRegister fflags frm fcsr cycle time instret
+" Control/Status registers (from Privileged Specification)
+" Unprivileged
+syntax keyword riscvCSRegister fflags frm fcsr
+syntax keyword riscvCSRegister cycle time instret
 syntax match   riscvCSRegister /\<hpmcounter\([3-9]\|[1-2][0-9]\|3[0-1]\)\>/
 syntax keyword riscvCSRegister cycleh timeh instreth
 syntax match   riscvCSRegister /\<hpmcounter\([3-9]\|[1-2][0-9]\|3[0-1]\)h\>/
-syntax keyword riscvCSRegister sstatus sedeleg sideleg sie stvec scounteren
-syntax keyword riscvCSRegister sscratch sepc scause stval sip satp mvendorid
-syntax keyword riscvCSRegister marchid mimpid mhartid mstatus misa medeleg
-syntax keyword riscvCSRegister mideleg mie mtvec mcounteren mscratch mepc
-syntax keyword riscvCSRegister mcause mtval mip
-syntax match   riscvCSRegister /\<pmpcfg[0-3]\>/
-syntax match   riscvCSRegister /\<pmpaddr\([0-9]\|1[0-5]\)\>/
+" Supervisor-level CSR
+syntax keyword riscvCSRegister sstatus sie stvec scounteren
+syntax keyword riscvCSRegister senvcfg
+syntax keyword riscvCSRegister sscratch sepc scause stval sip
+syntax keyword riscvCSRegister satp
+syntax keyword riscvCSRegister scontext
+" Hypervisor and VS CSR
+syntax keyword riscvCSRegister hstatus hedeleg hideleg hie hcounteren hgeie
+syntax keyword riscvCSRegister htval hip hvip htinst hgeip
+syntax keyword riscvCSRegister henvcfg henvcfgh
+syntax keyword riscvCSRegister hgatp
+syntax keyword riscvCSRegister hcountext
+syntax keyword riscvCSRegister htimedelta htimedeltah
+syntax keyword riscvCSRegister vsstatus vsie vstvec vsscratch vsepc vscause vstval vsip vsatp
+" Machine-level CSR
+syntax keyword riscvCSRegister mvendorid marchid mimpid mhartid mconfigptr
+syntax keyword riscvCSRegister mstatus misa medeleg mideleg mie mtvec mcounteren mstatush
+syntax keyword riscvCSRegister mscratch mepc mcause mtval mip mtinst mtval2
+syntax keyword riscvCSRegister menvcfg menvcfgh mseccfg mseccfgh
+syntax match   riscvCSRegister /\<pmpcfg\([0-9]\|1[0-5]\)\>/
+syntax match   riscvCSRegister /\<pmpaddr\([0-9]\|[1-5][0-9]\|6[0-3]\)\>/
 syntax keyword riscvCSRegister mcycle minstret
 syntax match   riscvCSRegister /\<mhpmcounter\([3-9]\|[1-2][0-9]\|3[0-1]\)\>/
 syntax keyword riscvCSRegister mcycleh minstreth
 syntax match   riscvCSRegister /\<mhpmcounter\([3-9]\|[1-2][0-9]\|3[0-1]\)h\>/
+syntax keyword riscvCSRegister mcountinhibit
 syntax match   riscvCSRegister /\<mhpmevent\([3-9]\|[1-2][0-9]\|3[0-1]\)\>/
-syntax keyword riscvCSRegister tselect
+syntax keyword riscvCSRegister tselect mcontext
 syntax match   riscvCSRegister /\<tdata[1-3]\>/
-syntax keyword riscvCSRegister dcsr dpc dscratch
+syntax keyword riscvCSRegister dcsr dpc
+syntax match   riscvCSRegister /\<dscratch[0-1]\?\>/
+" CSR from previous versions
+syntax keyword riscvCSRegister ustatus uie utvec uscratch uepc ucause utval uip
+syntax keyword riscvCSRegister sedeleg sideleg
 
 " Assembler directives
-syntax match riscvDirective "\<\.align\>"
-syntax match riscvDirective "\<\.ascii\>"
-syntax match riscvDirective "\<\.file\>"
-syntax match riscvDirective "\<\.globl\>"
-syntax match riscvDirective "\<\.local\>"
-syntax match riscvDirective "\<\.comm\>"
-syntax match riscvDirective "\<\.common\>"
-syntax match riscvDirective "\<\.ident\>"
-syntax match riscvDirective "\<\.section\>"
-syntax match riscvDirective "\<\.size\>"
-syntax match riscvDirective "\<\.text\>"
-syntax match riscvDirective "\<\.data\>"
-syntax match riscvDirective "\<\.rodata\>"
-syntax match riscvDirective "\<\.bss\>"
-syntax match riscvDirective "\<\.string\>"
-syntax match riscvDirective "\<\.asciz\>"
-syntax match riscvDirective "\<\.equ\>"
-syntax match riscvDirective "\<\.macro\>"
-syntax match riscvDirective "\<\.endm\>"
-syntax match riscvDirective "\<\.type\>"
-syntax match riscvDirective "\<\.option\>"
-syntax match riscvDirective "\<\.byte\>"
-syntax match riscvDirective "\<\.2byte\>"
-syntax match riscvDirective "\<\.half\>"
-syntax match riscvDirective "\<\.short\>"
-syntax match riscvDirective "\<\.4byte\>"
-syntax match riscvDirective "\<\.word\>"
-syntax match riscvDirective "\<\.long\>"
-syntax match riscvDirective "\<\.8byte\>"
-syntax match riscvDirective "\<\.dword\>"
-syntax match riscvDirective "\<\.quad\>"
-syntax match riscvDirective "\<\.skip\>"
-syntax match riscvDirective "\<\.dtprelword\>"
-syntax match riscvDirective "\<\.dtpreldword\>"
-syntax match riscvDirective "\<\.sleb128\>"
-syntax match riscvDirective "\<\.uleb128\>"
-syntax match riscvDirective "\<\.p2align\>"
-syntax match riscvDirective "\<\.balign\>"
-syntax match riscvDirective "\<\.zero\>"
-syntax match riscvDirective "\<\.global\>"
-syntax match riscvDirective "\<\.float\>"
-syntax match riscvDirective "\<\.double\>"
-syntax match riscvDirective "\<\.set\>"
-syntax match riscvDirective "\<\.attribute\>"
+syntax keyword riscvDirective .align .ascii .file .globl .local .comm .common .ident
+syntax keyword riscvDirective .section .size .text .data .rodata .bss .string .asciz
+syntax keyword riscvDirective .equ .macro .endm .type .option .byte .2byte .half .short
+syntax keyword riscvDirective .4byte .word .long .8byte .dword .quad .skip
+syntax keyword riscvDirective .dtprelword .dtpreldword .sleb128 .uleb128
+syntax keyword riscvDirective .p2align .balign
+syntax keyword riscvDirective .global .float .double .set .attribute
 
-" Instructions
-" loads
-syntax keyword riscvInstruction lb lh lw lbu lhu
-" stores
-syntax keyword riscvInstruction sb sh sw
-" shifts
-syntax keyword riscvInstruction sll slli srl srli sra srai
-" arithmetic
-syntax keyword riscvInstruction add addi sub lui auipc
-" logical
-syntax keyword riscvInstruction xor xori or ori and andi
-" compare
-syntax keyword riscvInstruction slt slti sltu sltiu
-" branches
-syntax keyword riscvInstruction beq bne blt bge bltu bgeu
-" jump & link
+" RV32I
+" Integer Register-Immediate Instructions
+syntax keyword riscvInstruction addi slti sltiu
+syntax keyword riscvInstruction andi ori xori
+syntax keyword riscvInstruction slli srli srai
+syntax keyword riscvInstruction lui auipc
+" Integer Register-Register Operations
+syntax keyword riscvInstruction add slt sltu and or xor sll srl sub sra
+" Control Transfer
 syntax keyword riscvInstruction jal jalr
-" synch
-syntax keyword riscvInstruction fence
-syntax match   riscvInstruction "\<fence\.i\>"
-" system call
-syntax keyword riscvInstruction scall sbreak
-" counters
-syntax keyword riscvInstruction rdcycle rdcycleh rdtime rdtimeh rdinstret rdinstreth
-" csr access
-syntax keyword riscvInstruction csrrw csrrs csrrc csrrwi csrrsi csrrci csrr csrw
-" change level
+syntax keyword riscvInstruction beq bne blt bltu bge bgeu
+" Load and Store
+syntax keyword riscvInstruction lw lh lhu lb lbu
+syntax keyword riscvInstruction sw sh sb
+" Memory Ordering
+syntax keyword riscvInstruction fence fence.tso
+" Environment Call and Breakpoints
 syntax keyword riscvInstruction ecall ebreak eret
-" trap redirect
-syntax keyword riscvInstruction mrts mrth hrts mret
-" interrupt
-syntax keyword riscvInstruction wfi
-" mmu
-syntax match   riscvInstruction "\<sfence\.vm\>"
+syntax keyword riscvInstruction scall sbreak
+
+" Zifencei
+syntax keyword riscvInstruction fence.i
+
+" RV64I
+syntax keyword riscvInstruction addiw slliw srliw sraiw
+syntax keyword riscvInstruction addw sllw srlw subw sraw
+syntax keyword riscvInstruction ld lwu sd
+
+" RV128I
+syntax keyword riscvInstruction ldu lq sq
 
 " M extension
-" multiply
 syntax keyword riscvInstruction mul mulh mulhsu mulhu
-" divide
 syntax keyword riscvInstruction div divu rem remu
+syntax keyword riscvInstruction mulw divw divuw remw remuw
 
 " A extension
-syntax match   riscvInstruction "\<lr\.w\>"
-syntax match   riscvInstruction "\<sc\.w\>"
-syntax match   riscvInstruction "\<amoswap\.w\>"
-syntax match   riscvInstruction "\<amoadd\.w\>"
-syntax match   riscvInstruction "\<amoxor\.w\>"
-syntax match   riscvInstruction "\<amoand\.w\>"
-syntax match   riscvInstruction "\<amoor\.w\>"
-syntax match   riscvInstruction "\<amomin\.w\>"
-syntax match   riscvInstruction "\<amomax\.w\>"
-syntax match   riscvInstruction "\<amominu\.w\>"
-syntax match   riscvInstruction "\<amomaxu\.w\>"
+syntax keyword riscvInstruction lr.w lr.d sc.w sc.d
+syntax keyword riscvInstruction amoswap.w amoswap.d
+syntax keyword riscvInstruction amoadd.w amoadd.d
+syntax keyword riscvInstruction amoand.w amoand.d
+syntax keyword riscvInstruction amoor.w amoor.d
+syntax keyword riscvInstruction amoxor.w amoxor.d
+syntax keyword riscvInstruction amomax.w amomax.d
+syntax keyword riscvInstruction amomin.w amomin.d
+syntax keyword riscvInstruction amomaxu.w amomaxu.d
+syntax keyword riscvInstruction amominu.w amominu.d
+
+" Zicsr
+syntax keyword riscvInstruction csrrw csrrs csrrc csrrwi csrrsi csrrci csrr csrw
+syntax keyword riscvInstruction csrwi csrsi csrci
+syntax keyword riscvInstruction frcsr fscsr frrm fsrm frflags fsflags
+
+" Counters
+syntax keyword riscvInstruction rdcycle rdcycleh rdtime rdtimeh rdinstret rdinstreth
 
 " C extension
-syntax match   riscvInstruction "\<c\.add\>"
-syntax match   riscvInstruction "\<c\.addi\>"
-syntax match   riscvInstruction "\<c\.addi4spn\>"
-syntax match   riscvInstruction "\<c\.addiw\>"
-syntax match   riscvInstruction "\<c\.addi16sp\>"
-syntax match   riscvInstruction "\<c\.fld\>"
-syntax match   riscvInstruction "\<c\.lq\>"
-syntax match   riscvInstruction "\<c\.lw\>"
-syntax match   riscvInstruction "\<c\.flw\>"
-syntax match   riscvInstruction "\<c\.ld\>"
-syntax match   riscvInstruction "\<c\.fsd\>"
-syntax match   riscvInstruction "\<c\.sq\>"
-syntax match   riscvInstruction "\<c\.sw\>"
-syntax match   riscvInstruction "\<c\.fsw\>"
-syntax match   riscvInstruction "\<c\.sd\>"
-syntax match   riscvInstruction "\<c\.nop\>"
-syntax match   riscvInstruction "\<c\.jal\>"
-syntax match   riscvInstruction "\<c\.li\>"
-syntax match   riscvInstruction "\<c\.lui\>"
-syntax match   riscvInstruction "\<c\.srli\>"
-syntax match   riscvInstruction "\<c\.srli64\>"
-syntax match   riscvInstruction "\<c\.srai\>"
-syntax match   riscvInstruction "\<c\.srai64\>"
-syntax match   riscvInstruction "\<c\.andi\>"
-syntax match   riscvInstruction "\<c\.sub\>"
-syntax match   riscvInstruction "\<c\.xor\>"
-syntax match   riscvInstruction "\<c\.or\>"
-syntax match   riscvInstruction "\<c\.and\>"
-syntax match   riscvInstruction "\<c\.subw\>"
-syntax match   riscvInstruction "\<c\.addw\>"
-syntax match   riscvInstruction "\<c\.j\>"
-syntax match   riscvInstruction "\<c\.beqz\>"
-syntax match   riscvInstruction "\<c\.bnez\>"
-syntax match   riscvInstruction "\<c\.slli\>"
-syntax match   riscvInstruction "\<c\.slli64\>"
-syntax match   riscvInstruction "\<c\.fldsp\>"
-syntax match   riscvInstruction "\<c\.lqsp\>"
-syntax match   riscvInstruction "\<c\.lwsp\>"
-syntax match   riscvInstruction "\<c\.flwsp\>"
-syntax match   riscvInstruction "\<c\.ldsp\>"
-syntax match   riscvInstruction "\<c\.jr\>"
-syntax match   riscvInstruction "\<c\.mv\>"
-syntax match   riscvInstruction "\<c\.ebreak\>"
-syntax match   riscvInstruction "\<c\.jalr\>"
-syntax match   riscvInstruction "\<c\.fsdsp\>"
-syntax match   riscvInstruction "\<c\.sqsp\>"
-syntax match   riscvInstruction "\<c\.swsp\>"
-syntax match   riscvInstruction "\<c\.fswsp\>"
-syntax match   riscvInstruction "\<c\.sdsp\>"
+syntax keyword riscvInstruction c.lwsp c.ldsp c.lqsp c.flwsp c.fldsp
+syntax keyword riscvInstruction c.swsp c.sdsp c.sqsp c.fswsp c.fsdsp
+syntax keyword riscvInstruction c.lw c.ld c.lq c.flw c.fld
+syntax keyword riscvInstruction c.sw c.sd c.sq c.fsw c.fsd
+syntax keyword riscvInstruction c.j c.jal c.jr c.jalr
+syntax keyword riscvInstruction c.beqz c.bnez
+syntax keyword riscvInstruction c.li c.lui
+syntax keyword riscvInstruction c.addi c.addiw c.addi16sp c.addi4spn
+syntax keyword riscvInstruction c.slli c.srli c.srai c.slli64 cc.srli64 c.srai64
+syntax keyword riscvInstruction c.andi
+syntax keyword riscvInstruction c.mv c.add c.and c.or c.xor c.sub c.addw c.subw
+syntax keyword riscvInstruction c.nop
+syntax keyword riscvInstruction c.ebreak
 
 " F extension
 syntax keyword riscvInstruction flw fsw
-syntax match   riscvInstruction "\<fmadd\.s\>"
-syntax match   riscvInstruction "\<fmsub\.s\>"
-syntax match   riscvInstruction "\<fnmsub\.s\>"
-syntax match   riscvInstruction "\<fnmadd\.s\>"
-syntax match   riscvInstruction "\<fadd\.s\>"
-syntax match   riscvInstruction "\<fsub\.s\>"
-syntax match   riscvInstruction "\<fmul\.s\>"
-syntax match   riscvInstruction "\<fdiv\.s\>"
-syntax match   riscvInstruction "\<fsqrt\.s\>"
-syntax match   riscvInstruction "\<fsgnj\.s\>"
-syntax match   riscvInstruction "\<fsgnjn\.s\>"
-syntax match   riscvInstruction "\<fsgnjx\.s\>"
-syntax match   riscvInstruction "\<fmin\.s\>"
-syntax match   riscvInstruction "\<fmax\.s\>"
-syntax match   riscvInstruction "\<fcvt\.w\.s\>"
-syntax match   riscvInstruction "\<fcvt\.wu\.s\>"
-syntax match   riscvInstruction "\<fmv\.x\.w\>"
-syntax match   riscvInstruction "\<feq\.s\>"
-syntax match   riscvInstruction "\<flt\.s\>"
-syntax match   riscvInstruction "\<fle\.s\>"
-syntax match   riscvInstruction "\<fclass\.s\>"
-syntax match   riscvInstruction "\<fcvt\.s\.w\>"
-syntax match   riscvInstruction "\<fcvt\.s\.wu\>"
-syntax match   riscvInstruction "\<fmv\.w\.x\>"
-syntax match   riscvInstruction "\<fcvt\.l\.s\>"
-syntax match   riscvInstruction "\<fcvt\.lu\.s\>"
-syntax match   riscvInstruction "\<fcvt\.s\.l\>"
-syntax match   riscvInstruction "\<fcvt\.s\.lu\>"
+syntax keyword riscvInstruction fadd.s fsub.s
+syntax keyword riscvInstruction fmul.s fdiv.s
+syntax keyword riscvInstruction fmadd.s fmsub.s fnmadd.s fnmsub.s
+syntax keyword riscvInstruction fsqrt.s
+syntax keyword riscvInstruction fmin.s fmax.s
+
+syntax keyword riscvInstruction fcvt.w.s fcvt.wu.s fcvt.l.s fcvt.lu.s
+syntax keyword riscvInstruction fcvt.s.w fcvt.s.wu fcvt.s.l fcvt.s.lu
+syntax keyword riscvInstruction fsgnj.s fsgnj.n.s fsgnjx.s
+syntax keyword riscvInstruction fmv.s fneg.s fabs.s
+syntax keyword riscvInstruction fmv.x.w fmv.w.x
+syntax keyword riscvInstruction fmv.x.s fmv.s.x
+syntax keyword riscvInstruction feq.s flt.s fle.s
+syntax keyword riscvInstruction fclass.s
 
 " D extension
 syntax keyword riscvInstruction fld fsd
-syntax match   riscvInstruction "\<fmadd\.d\>"
-syntax match   riscvInstruction "\<fmsub\.d\>"
-syntax match   riscvInstruction "\<fnmsub\.d\>"
-syntax match   riscvInstruction "\<fnmadd\.d\>"
-syntax match   riscvInstruction "\<fadd\.d\>"
-syntax match   riscvInstruction "\<fsub\.d\>"
-syntax match   riscvInstruction "\<fmul\.d\>"
-syntax match   riscvInstruction "\<fdiv\.d\>"
-syntax match   riscvInstruction "\<fsqrt\.d\>"
-syntax match   riscvInstruction "\<fsgnj\.d\>"
-syntax match   riscvInstruction "\<fsgnjn\.d\>"
-syntax match   riscvInstruction "\<fsgnjx\.d\>"
-syntax match   riscvInstruction "\<fmin\.d\>"
-syntax match   riscvInstruction "\<fmax\.d\>"
-syntax match   riscvInstruction "\<fcvt\.s\.d\>"
-syntax match   riscvInstruction "\<fcvt\.d\.s\>"
-syntax match   riscvInstruction "\<feq\.d\>"
-syntax match   riscvInstruction "\<flt\.d\>"
-syntax match   riscvInstruction "\<fle\.d\>"
-syntax match   riscvInstruction "\<fclass\.d\>"
-syntax match   riscvInstruction "\<fcvt\.w\.d\>"
-syntax match   riscvInstruction "\<fcvt\.wu\.d\>"
-syntax match   riscvInstruction "\<fcvt\.d\.w\>"
-syntax match   riscvInstruction "\<fcvt\.d\.wu\>"
-syntax match   riscvInstruction "\<fcvt\.l\.d\>"
-syntax match   riscvInstruction "\<fcvt\.lu\.d\>"
-syntax match   riscvInstruction "\<fmv\.x\.d\>"
-syntax match   riscvInstruction "\<fcvt\.d\.l\>"
-syntax match   riscvInstruction "\<fcvt\.d\.lu\>"
-syntax match   riscvInstruction "\<fmv\.d\.x\>"
+syntax keyword riscvInstruction fadd.d fsub.d
+syntax keyword riscvInstruction fmul.d fdiv.d
+syntax keyword riscvInstruction fmin.d fmax.d
+syntax keyword riscvInstruction fsqrt.d
+syntax keyword riscvInstruction fmadd.d fmsub.d fnmadd.d fnmsub.d
+
+syntax keyword riscvInstruction fcvt.w.d fcvt.wu.d fcvt.l.d fcvt.lu.d
+syntax keyword riscvInstruction fcvt.d.w fcvt.d.wu fcvt.d.l fcvt.d.lu
+syntax keyword riscvInstruction fcvt.s.d fcvt.d.s
+syntax keyword riscvInstruction fsgnj.d fsgnjn.d fsgnjx.d
+syntax keyword riscvInstruction fmv.d fneg.d fabs.d
+syntax keyword riscvInstruction fmv.x.d fmv.d.x
+syntax keyword riscvInstruction feq.d flt.d fle.d
+syntax keyword riscvInstruction fclass.d
 
 " Q extension
 syntax keyword riscvInstruction flq fsq
-syntax match   riscvInstruction "\<fmadd\.q\>"
-syntax match   riscvInstruction "\<fmsub\.q\>"
-syntax match   riscvInstruction "\<fnmsub\.q\>"
-syntax match   riscvInstruction "\<fnmadd\.q\>"
-syntax match   riscvInstruction "\<fadd\.q\>"
-syntax match   riscvInstruction "\<fsub\.q\>"
-syntax match   riscvInstruction "\<fmul\.q\>"
-syntax match   riscvInstruction "\<fdiv\.q\>"
-syntax match   riscvInstruction "\<fsqrt\.q\>"
-syntax match   riscvInstruction "\<fsgnj\.q\>"
-syntax match   riscvInstruction "\<fsgnjn\.q\>"
-syntax match   riscvInstruction "\<fsgnjx\.q\>"
-syntax match   riscvInstruction "\<fmin\.q\>"
-syntax match   riscvInstruction "\<fmax\.q\>"
-syntax match   riscvInstruction "\<fcvt\.s\.q\>"
-syntax match   riscvInstruction "\<fcvt\.q\.s\>"
-syntax match   riscvInstruction "\<fcvt\.d\.q\>"
-syntax match   riscvInstruction "\<fcvt\.q\.d\>"
-syntax match   riscvInstruction "\<feq\.q\>"
-syntax match   riscvInstruction "\<flt\.q\>"
-syntax match   riscvInstruction "\<fle\.q\>"
-syntax match   riscvInstruction "\<fclass\.d\>"
-syntax match   riscvInstruction "\<fcvt\.w\.q\>"
-syntax match   riscvInstruction "\<fcvt\.wu\.q\>"
-syntax match   riscvInstruction "\<fcvt\.q\.w\>"
-syntax match   riscvInstruction "\<fcvt\.q\.wu\>"
-syntax match   riscvInstruction "\<fcvt\.l\.q\>"
-syntax match   riscvInstruction "\<fcvt\.lu\.q\>"
-syntax match   riscvInstruction "\<fcvt\.q\.l\>"
-syntax match   riscvInstruction "\<fcvt\.q\.lu\>"
+syntax keyword riscvInstruction fadd.q fsub.q
+syntax keyword riscvInstruction fmul.q fdiv.q
+syntax keyword riscvInstruction fmin.q fmax.q
+syntax keyword riscvInstruction fsqrt.q
+syntax keyword riscvInstruction fmadd.q fmsub.q fnmadd.q fnmsub.q
+
+syntax keyword riscvInstruction fcvt.w.q fcvt.wu.q fcvt.l.q fcvt.lu.q
+syntax keyword riscvInstruction fcvt.q.w fcvt.q.wu fcvt.q.l fcvt.q.lu
+syntax keyword riscvInstruction fcvt.s.q fcvt.q.s fcvt.d.q fcvt.q.d
+syntax keyword riscvInstruction fsgnj.q fsgnjn.q fsgnjx.q
+syntax keyword riscvInstruction fmv.x.q fmv.q.x
+syntax keyword riscvInstruction feq.d flt.d fle.d
+syntax keyword riscvInstruction fclass.q
 
 " float rouding modes
 syntax keyword riscvDirective rne rtz rdn rup rmm dyn
@@ -322,12 +226,33 @@ syntax keyword riscvInstruction addw subw addiw
 syntax keyword riscvInstruction mulw divw divuw remw remuw
 
 " pseudo-instructions
-syntax keyword riscvInstruction nop li la lla mv
+syntax keyword riscvInstruction li la lla
+syntax keyword riscvInstruction nop mv
 syntax keyword riscvInstruction not neg negw
-syntax match   riscvInstruction "\<sext\.w\>"
+syntax keyword riscvInstruction sext.w
 syntax keyword riscvInstruction seqz snez sltz sgtz
-syntax keyword riscvInstruction beqz bnez blez bgtz bgt ble bgtu bleu bgez bltz
+syntax keyword riscvInstruction fmv.s fabs.s fneg.s
+syntax keyword riscvInstruction fmv.d fabs.d fneg.d
+syntax keyword riscvInstruction fmv.q fabs.q fneg.q
+syntax keyword riscvInstruction beqz bnez blez bgez bltz bgtz bgt ble bgtu bleu
 syntax keyword riscvInstruction j jr ret call tail jump
+
+" Privileged Instructions
+" Machine-Mode Privileged instructions
+syntax keyword riscvInstruction mret sret
+syntax keyword riscvInstruction wfi
+" Supervisor Instructions
+syntax keyword riscvInstruction sfence.vma
+" Svinval
+syntax keyword riscvInstruction sinval.vma sfence.w.inval sfence.inval.ir
+" Hypervisor Instructions
+syntax keyword riscvInstruction hlv.b hlv.bu hlv.h hlv.hu hlv.w hlv.wu hlv.d
+syntax keyword riscvInstruction hsv.b hsv.h hsv.w hsv.d
+syntax keyword riscvInstruction hlvx.hu hlvx.wu
+syntax keyword riscvInstruction hfence.vvma hfence.gvma
+syntax keyword riscvInstruction hinval.vvma hinval.gvma
+" In older versions of privileged spec
+syntax keyword riscvInstruction mrts mrth hrts sfence.vm
 
 " relocations
 syntax match   riscvDirective "\<%hi\>"
