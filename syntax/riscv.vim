@@ -22,6 +22,8 @@ syntax region  riscvString     start=/"/ skip=/\\"/ end=/"/
 syntax region  riscvChar       start=/'/ skip=/\\'/ end=/'/
 syntax match   riscvLabelColon /:/ contained
 syntax match   riscvLabel      /\w\+:/ contains=riscvLabelColon
+" A reference to a local label using <num>[BF]
+syntax match   riscvLabelRef   /\d\+[bf]/
 
 " Registers
 " Numbered registers
@@ -142,6 +144,7 @@ syntax keyword riscvInstruction amominu.w amominu.d
 syntax keyword riscvInstruction csrrw csrrs csrrc csrrwi csrrsi csrrci csrr csrw
 syntax keyword riscvInstruction csrwi csrsi csrci
 syntax keyword riscvInstruction frcsr fscsr frrm fsrm frflags fsflags
+syntax keyword riscvInstruction fsrmi fsflagsi
 
 " Counters
 syntax keyword riscvInstruction rdcycle rdcycleh rdtime rdtimeh rdinstret rdinstreth
@@ -162,6 +165,7 @@ syntax keyword riscvInstruction c.nop
 syntax keyword riscvInstruction c.ebreak
 
 " F extension
+
 syntax keyword riscvInstruction flw fsw
 syntax keyword riscvInstruction fadd.s fsub.s
 syntax keyword riscvInstruction fmul.s fdiv.s
@@ -172,11 +176,13 @@ syntax keyword riscvInstruction fmin.s fmax.s
 syntax keyword riscvInstruction fcvt.w.s fcvt.wu.s fcvt.l.s fcvt.lu.s
 syntax keyword riscvInstruction fcvt.s.w fcvt.s.wu fcvt.s.l fcvt.s.lu
 syntax keyword riscvInstruction fsgnj.s fsgnj.n.s fsgnjx.s
-syntax keyword riscvInstruction fmv.s fneg.s fabs.s
 syntax keyword riscvInstruction fmv.x.w fmv.w.x
 syntax keyword riscvInstruction fmv.x.s fmv.s.x
 syntax keyword riscvInstruction feq.s flt.s fle.s
 syntax keyword riscvInstruction fclass.s
+
+" Rounding modes
+syntax keyword riscvDirective rne rtz rdn rup rmm dyn
 
 " D extension
 syntax keyword riscvInstruction fld fsd
@@ -190,7 +196,6 @@ syntax keyword riscvInstruction fcvt.w.d fcvt.wu.d fcvt.l.d fcvt.lu.d
 syntax keyword riscvInstruction fcvt.d.w fcvt.d.wu fcvt.d.l fcvt.d.lu
 syntax keyword riscvInstruction fcvt.s.d fcvt.d.s
 syntax keyword riscvInstruction fsgnj.d fsgnjn.d fsgnjx.d
-syntax keyword riscvInstruction fmv.d fneg.d fabs.d
 syntax keyword riscvInstruction fmv.x.d fmv.d.x
 syntax keyword riscvInstruction feq.d flt.d fle.d
 syntax keyword riscvInstruction fclass.d
@@ -211,9 +216,6 @@ syntax keyword riscvInstruction fmv.x.q fmv.q.x
 syntax keyword riscvInstruction feq.d flt.d fle.d
 syntax keyword riscvInstruction fclass.q
 
-" float rouding modes
-syntax keyword riscvDirective rne rtz rdn rup rmm dyn
-
 " RV64I
 " load and store
 syntax keyword riscvInstruction lwu ld sd
@@ -226,16 +228,25 @@ syntax keyword riscvInstruction addw subw addiw
 syntax keyword riscvInstruction mulw divw divuw remw remuw
 
 " pseudo-instructions
-syntax keyword riscvInstruction li la lla
+syntax keyword riscvInstruction li la lla lga
 syntax keyword riscvInstruction nop mv
 syntax keyword riscvInstruction not neg negw
-syntax keyword riscvInstruction sext.w
+syntax keyword riscvInstruction sext.b sext.h sext.w zext.b zext.h zext.w
 syntax keyword riscvInstruction seqz snez sltz sgtz
 syntax keyword riscvInstruction fmv.s fabs.s fneg.s
 syntax keyword riscvInstruction fmv.d fabs.d fneg.d
 syntax keyword riscvInstruction fmv.q fabs.q fneg.q
 syntax keyword riscvInstruction beqz bnez blez bgez bltz bgtz bgt ble bgtu bleu
 syntax keyword riscvInstruction j jr ret call tail jump
+
+" The unimp/c.unimp instruction should almost always trap
+syntax keyword riscvDebug unimp c.unimp
+
+" Option Values
+syntax keyword riscvOption rvc norvc
+syntax keyword riscvOption pic nopic
+syntax keyword riscvOption relax norelax
+syntax keyword riscvOption push pop
 
 " Privileged Instructions
 " Machine-Mode Privileged instructions
@@ -270,11 +281,14 @@ hi def link riscvComment        Comment
 hi def link riscvTodo           Todo
 hi def link riscvNumber         Number
 hi def link riscvString         String
-hi def link riscvChar           String
+hi def link riscvChar           Character
 hi def link riscvRegister       Type
 hi def link riscvCSRegister     Function
 hi def link riscvLabel          Label
 hi def link riscvDirective      Preproc
 hi def link riscvInstruction    Keyword
+hi def link riscvDebug          Debug
+hi def link riscvOption         Identifier
+hi def link riscvLabelRef       Identifier
 
 let b:current_syntax = "riscv"
