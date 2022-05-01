@@ -355,18 +355,6 @@ syntax keyword riscvInstruction vrgatherei16.vv
 syntax keyword riscvInstruction vcompress.vm
 syntax match   riscvInstruction /\<vmv[1248]r\.v\>/
 
-
-" RV64I
-" load and store
-syntax keyword riscvInstruction lwu ld sd
-" shift
-syntax keyword riscvInstruction sllw srlw sraw slliw srliw sraiw
-" add / sub
-syntax keyword riscvInstruction addw subw addiw
-
-" RV64M
-syntax keyword riscvInstruction mulw divw divuw remw remuw
-
 " pseudo-instructions
 syntax keyword riscvInstruction li la lla lga
 syntax keyword riscvInstruction nop mv
