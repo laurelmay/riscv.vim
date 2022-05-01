@@ -79,9 +79,6 @@ syntax keyword riscvCSRegister tselect mcontext
 syntax match   riscvCSRegister /\<tdata[1-3]\>/
 syntax keyword riscvCSRegister dcsr dpc
 syntax match   riscvCSRegister /\<dscratch[0-1]\?\>/
-" CSR from previous versions
-syntax keyword riscvCSRegister ustatus uie utvec uscratch uepc ucause utval uip
-syntax keyword riscvCSRegister sedeleg sideleg
 
 " Assembler directives
 syntax keyword riscvDirective .align .ascii .file .globl .local .comm .common .ident
@@ -165,7 +162,6 @@ syntax keyword riscvInstruction c.nop
 syntax keyword riscvInstruction c.ebreak
 
 " F extension
-
 syntax keyword riscvInstruction flw fsw
 syntax keyword riscvInstruction fadd.s fsub.s
 syntax keyword riscvInstruction fmul.s fdiv.s
@@ -215,6 +211,150 @@ syntax keyword riscvInstruction fsgnj.q fsgnjn.q fsgnjx.q
 syntax keyword riscvInstruction fmv.x.q fmv.q.x
 syntax keyword riscvInstruction feq.d flt.d fle.d
 syntax keyword riscvInstruction fclass.q
+
+" N extension (draft)
+syntax keyword riscvCSRegister  ustatus uscratch uepc ucause utvec utval uip uie
+syntax keyword riscvCSRegister  sedeleg sideleg
+syntax keyword riscvInstruction uret
+
+" V extension (draft https://github.com/riscv/riscv-v-spec/releases/tag/v1.0)
+syntax keyword riscvCSRegister  vstart vxsat vxrm vcsr vtype vl vlenb
+syntax keyword riscvOption      e8 e16 e32 e64 mf8 mf4 mf2 m1 m2 m4 m8
+syntax keyword riscvOption      ta tu ma mu
+syntax match   riscvRegister    /\<v\([1-2]\?[0-9]\|3[0-1]\)\>/
+syntax match   riscvOption      /\<v\([1-2]\?[0-9]\|3[0-1]\)\.t\>/
+syntax keyword riscvInstruction vsetvli vsetivli vsetvl
+syntax keyword riscvInstruction flh fsh
+syntax match   riscvInstruction /\<v[sl]s\?e\(8\|16\|32\|64\)\.v\>/
+syntax match   riscvInstruction /\<vle\(8\|16\|32\|64\)ff\.v\>/
+syntax match   riscvInstruction /\<v[sl][ou]xei\(8\|16\|32\|64\)\.v\>/
+syntax keyword riscvInstruction vlm.v vsm.v vle1.v vse1.v
+" These likely support some instructions that may not be valid as it would
+" result in EMUL * NFIELD > 8.
+syntax match   riscvInstruction /\<v[sl]s\?seg[1-8]e\(8\|16\|32\|64\)\.v\>/
+syntax match   riscvInstruction /\<vlseg[1-8]e\(8\|16\|32\|64\)ff\.v\>/
+syntax match   riscvInstruction /\<v[sl][ou]xseg[1-8]ei\(8\|16\|32\|64\)\.v\>/
+" Load/Store Whole Register Instructions
+syntax match   riscvInstruction /\<vl[1248]re\(8\|16\|32\|64\)\.v\>/
+syntax match   riscvInstruction /\<v[sl][1248]r\.v\>/
+" Vector Integer Arithmetic Instructions
+syntax keyword riscvInstruction vadd.vv vadd.vx vadd.vi
+syntax keyword riscvInstruction vsub.vv vsub.vx vrsub.vx vrsub.vi
+syntax match   riscvInstruction /\<vwaddu\?\.[vw][vx]\>/
+syntax match   riscvInstruction /\<vwsubu\?\.[vw][vx]\>/
+syntax keyword riscvInstruction vwcvt.x.x.v vwcvtu.x.x.v
+syntax match   riscvInstruction /\<v[sz]ext\.vf[248]\>/
+syntax match   riscvInstruction /\<vadc\.v[vix]m\>/
+syntax match   riscvInstruction /\<vmadc\.v[vix]m\?\>/
+syntax match   riscvInstruction /\<vsbc\.v[vx]m\>/
+syntax match   riscvInstruction /\<vmsbc\.v[vx]m\?\>/
+syntax match   riscvInstruction /\<vand\.v[vxi]\>/
+syntax match   riscvInstruction /\<vx\?or\.v[vxi]\>/
+syntax keyword riscvInstruction vnot.v
+syntax match   riscvInstruction /\<vs\([lr]l\|ra\)\.v[vxi]\>/
+syntax match   riscvInstruction /\<vnsr[la]\.w[vxi]\>/
+syntax keyword riscvInstruction vncvt.x.x.w
+syntax match   riscvInstruction /\<vmseq\.v[vxi]\>/
+syntax match   riscvInstruction /\<vmsne\.v[vxi]\>/
+syntax match   riscvInstruction /\<vmsltu\?\.v[vx]\>/
+syntax match   riscvInstruction /\<vmsleu\?\.v[vxi]\>/
+syntax match   riscvInstruction /\<vmsgtu\?\.v[xi]\>/
+" Compare Pseudoinstructions
+syntax match   riscvInstruction /\<vmsg[te]u\?\.vv\>/
+syntax keyword riscvInstruction vmslt.vi vmsltu.vi
+syntax keyword riscvInstruction vmsge.vi vmsgeu.vi
+syntax keyword riscvInstruction vmsge.vx vmsgeu.vx
+" Integer Minx/Max instructions
+syntax match   riscvInstruction /\<vminu\?\.v[vx]\>/
+syntax match   riscvInstruction /\<vmaxu\?\.v[vx]\>/
+" Single-width integer multiplication
+syntax match   riscvInstruction /\<vmul\(h\(s\?u\)\?\)\?\.v[vx]\>/
+syntax match   riscvInstruction /\<vdivu\?\.v[vx]\>/
+syntax match   riscvInstruction /\<vremu\?\.v[vx]\>/
+
+syntax match   riscvInstruction /\<vwmul\(s\?u\)\?\.v[vx]\>/
+syntax match   riscvInstruction /\<vma\(cc\|dd\)\.v[vx]\>/
+syntax match   riscvInstruction /\<vnms\(ac\|ub\)\.v[vx]\>/
+syntax match   riscvInstruction /\<vwmaccu\?\.v[vx]\>/
+syntax match   riscvInstruction /\<vwmaccsu\.v[vx]\>/
+syntax keyword riscvInstruction vwmaccus.vx
+syntax match   riscvInstruction /\<vmerge\.v[vxi]m\>/
+syntax match   riscvInstruction /\<vmv\.v\.[vxi]\>/
+
+syntax match   riscvInstruction /\<vsaddu\?\.v[vxi]\>/
+syntax match   riscvInstruction /\<vaaddu\?\.v[vx]\>/
+syntax match   riscvInstruction /\<v[as]subu\?\.v[vx]\>/
+syntax match   riscvInstruction /\<vsmul\.v[vx]\>/
+syntax match   riscvInstruction /\<vssr[la]\.v[vxi]\>/
+syntax match   riscvInstruction /\<vnclipu\?\.w[vxi]\>/
+
+syntax match   riscvInstruction /\<vfadd\.v[vf]\>/
+syntax match   riscvInstruction /\<vfsub\.v[vf]\>/
+syntax keyword riscvInstruction vfrsub.vf
+syntax match   riscvInstruction /\<vfwadd\.[wv][vf]\>/
+syntax match   riscvInstruction /\<vfwsub\.[wv][vf]\>/
+syntax match   riscvInstruction /\<vfmul\.v[vf]\>/
+syntax match   riscvInstruction /\<vfdiv\.v[vf]\>/
+syntax keyword riscvInstruction vfrdiv.vf
+syntax match   riscvInstruction /\<vfwmul\.v[vf]\>/
+syntax match   riscvInstruction /\<vfw\?n\?macc\.v[vf]\>/
+syntax match   riscvInstruction /\<vfw\?n\?msac\.v[vf]\>/
+syntax match   riscvInstruction /\<vfn\?madd\.v[vf]\>/
+syntax match   riscvInstruction /\<vfn\?msub\.v[vf]\>/
+syntax keyword riscvInstruction vfsqrt.v vfrsqrt7.v vfrsqrte7.v
+syntax keyword riscvInstruction vfrec7.v vfrece7.v
+syntax match   riscvInstruction /\<vfmin\.v[vf]\>/
+syntax match   riscvInstruction /\<vfmax\.v[vf]\>/
+syntax match   riscvInstruction /\<vfsgnj[nx]\?\.v[vf]\>/
+syntax keyword riscvInstruction vfneg.v vfabs.v
+syntax match   riscvInstruction /\<vmfeq\.v[vf]\>/
+syntax match   riscvInstruction /\<vmfne\.v[vf]\>/
+syntax match   riscvInstruction /\<vmfl[te]\.v[vf]\>/
+" The .vv variants are provided as Pseudoinstructions
+syntax match   riscvInstruction /\<vmfg[te]\.v[vf]\>/
+syntax keyword riscvInstruction vfclass.v
+syntax keyword riscvInstruction vfmerge.vfm
+syntax keyword riscvInstruction vfmv.v.f
+syntax keyword riscvInstruction vfcvt.xu.f.v vfcvt.x.f.v
+syntax keyword riscvInstruction vfcvt.rtz.xu.f.v vtcvt.rtz.x.f.v
+syntax keyword riscvInstruction vfcvt.f.xu.v vfcvt.f.x.v
+syntax keyword riscvInstruction vfwcvt.xu.f.v vfwcvt.x.f.v
+syntax keyword riscvInstruction vfwcvt.rtz.xu.f.v vfwcvt.rtz.x.f.v
+syntax keyword riscvInstruction vfwcvt.f.xu.v vfwcvt.f.x.v vfwcvt.f.f.v
+syntax keyword riscvInstruction vfncvt.xu.f.w vfncvt.x.f.w
+syntax keyword riscvInstruction vfncvt.rtz.xu.f.w vfncvt.rtz.x.f.w
+syntax keyword riscvInstruction vfncvt.f.xu.w vfncvt.f.x.w
+syntax keyword riscvInstruction vfncvt.f.f.w vfncvt.rod.f.f.w
+
+syntax keyword riscvInstruction vredsum.vs vredmaxu.vs vredmax.vs vredminu.vs vredmin.vs
+syntax keyword riscvInstruction vredand.vs vredor.vs vredxor.vs
+syntax keyword riscvInstruction vwredsumu.vs vwredsum.vs
+syntax match   riscvInstruction /\<vfw\?red[ou]\?sum\.vs\>/
+syntax keyword riscvInstruction vfredmax.vs vfredmin.vs
+
+syntax keyword riscvInstruction vmand.mm vmnand.mm vmandn.mm
+syntax keyword riscvInstruction vmxor.mm vmor.mm vmnor.mm vmorn.mm vmxnor.mm
+syntax keyword riscvInstruction vmandnot.mm vmornot.mm
+syntax keyword riscvInstruction vmmv.m vmclr.m cmset.m vmnot.m vmcpy.m
+syntax keyword riscvInstruction vcpop.m vpopc.m
+syntax keyword riscvInstruction vfirst.m
+syntax keyword riscvInstruction vmsbf.m
+syntax keyword riscvInstruction vmsif.m
+syntax keyword riscvInstruction vmsof.m
+syntax keyword riscvInstruction viota.m
+syntax keyword riscvInstruction vid.v
+
+syntax keyword riscvInstruction vmv.x.s vmv.s.x
+syntax keyword riscvInstruction vfmv.f.s vfmv.s.f
+syntax keyword riscvInstruction vslideup.vx vslideup.vi
+syntax keyword riscvInstruction vslidedown.vx vslidedown.vi
+syntax keyword riscvInstruction vslide1up.vx vfslide1up.vf
+syntax keyword riscvInstruction vslide1down.vx vfslide1down.vf
+syntax match   riscvInstruction /\<vrgather\.v[vxi]\>/
+syntax keyword riscvInstruction vrgatherei16.vv
+syntax keyword riscvInstruction vcompress.vm
+syntax match   riscvInstruction /\<vmv[1248]r\.v\>/
+
 
 " RV64I
 " load and store

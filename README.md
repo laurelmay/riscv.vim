@@ -37,6 +37,11 @@ the `fmv.x.s` instruction) and syntax from drafts that may have real-world
 usage, though support for these may not be as complete. Contributions to add
 these are welcome.
 
+Draft specifications implemented are based on:
+
+ - ["N" Extension](https://five-embeddev.com/riscv-isa-manual/latest/n.html#chap:n)
+ - ["V" Extension](https://github.com/riscv/riscv-v-spec/releases/tag/v1.0)
+
 ## Usage
 
 Save your files with a .S extension or execute `set ft=riscv`.
