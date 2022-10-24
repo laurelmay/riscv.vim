@@ -316,7 +316,7 @@ syntax keyword riscvInstruction vfclass.v
 syntax keyword riscvInstruction vfmerge.vfm
 syntax keyword riscvInstruction vfmv.v.f
 syntax keyword riscvInstruction vfcvt.xu.f.v vfcvt.x.f.v
-syntax keyword riscvInstruction vfcvt.rtz.xu.f.v vtcvt.rtz.x.f.v
+syntax keyword riscvInstruction vfcvt.rtz.xu.f.v vfcvt.rtz.x.f.v
 syntax keyword riscvInstruction vfcvt.f.xu.v vfcvt.f.x.v
 syntax keyword riscvInstruction vfwcvt.xu.f.v vfwcvt.x.f.v
 syntax keyword riscvInstruction vfwcvt.rtz.xu.f.v vfwcvt.rtz.x.f.v
