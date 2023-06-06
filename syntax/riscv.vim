@@ -138,7 +138,8 @@ syntax keyword riscvInstruction amomaxu.w amomaxu.d
 syntax keyword riscvInstruction amominu.w amominu.d
 
 " Zicsr
-syntax keyword riscvInstruction csrrw csrrs csrrc csrrwi csrrsi csrrci csrr csrw
+syntax keyword riscvInstruction csrrw csrrs csrrc csrrwi csrrsi csrrci
+syntax keyword riscvInstruction csrr csrw csrc csrs
 syntax keyword riscvInstruction csrwi csrsi csrci
 syntax keyword riscvInstruction frcsr fscsr frrm fsrm frflags fsflags
 syntax keyword riscvInstruction fsrmi fsflagsi
