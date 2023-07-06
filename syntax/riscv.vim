@@ -172,7 +172,7 @@ syntax keyword riscvInstruction fmin.s fmax.s
 
 syntax keyword riscvInstruction fcvt.w.s fcvt.wu.s fcvt.l.s fcvt.lu.s
 syntax keyword riscvInstruction fcvt.s.w fcvt.s.wu fcvt.s.l fcvt.s.lu
-syntax keyword riscvInstruction fsgnj.s fsgnj.n.s fsgnjx.s
+syntax keyword riscvInstruction fsgnj.s fsgnjn.s fsgnjx.s
 syntax keyword riscvInstruction fmv.x.w fmv.w.x
 syntax keyword riscvInstruction fmv.x.s fmv.s.x
 syntax keyword riscvInstruction feq.s flt.s fle.s
