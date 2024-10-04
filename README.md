@@ -14,9 +14,20 @@ Put all files in your vim directory (such as `~/.vim/` or `~/.config/nvim/`)
 
 1. Add the following to your `.vimrc`.
 
-        Plug 'kylelaker/riscv.vim'
-
+   ```vim
+   Plug 'laurelmay/riscv.vim'
+   ```
 2. Install with `:PlugInstall`
+
+### [lazy.nvim](https://github.com/folke/lazy.nvim)
+
+```lua
+{
+  'laurelmay/riscv.nvim',
+  -- The ftdetect configuration does not work well when lazy-loaded
+  lazy = false,
+}
+```
 
 ## Syntax Support
 
@@ -39,8 +50,8 @@ these are welcome.
 
 Draft specifications implemented are based on:
 
- - ["N" Extension](https://five-embeddev.com/riscv-isa-manual/latest/n.html#chap:n)
- - ["V" Extension](https://github.com/riscv/riscv-v-spec/releases/tag/v1.0)
+- ["N" Extension](https://five-embeddev.com/riscv-isa-manual/latest/n.html#chap:n)
+- ["V" Extension](https://github.com/riscv/riscv-v-spec/releases/tag/v1.0)
 
 ## Usage
 
