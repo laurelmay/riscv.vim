@@ -358,6 +358,7 @@ syntax match   riscvInstruction /\<vmv[1248]r\.v\>/
 
 " pseudo-instructions
 syntax keyword riscvInstruction li la lla lga
+syntax keyword riscvInstruction subi
 syntax keyword riscvInstruction nop mv
 syntax keyword riscvInstruction not neg negw
 syntax keyword riscvInstruction sext.b sext.h sext.w zext.b zext.h zext.w
