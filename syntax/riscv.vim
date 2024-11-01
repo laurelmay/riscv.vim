@@ -30,6 +30,8 @@ syntax match   riscvLabelRef   /\d\+[bf]/
 syntax match   riscvRegister /\<x\([1-2]\?[0-9]\|3[0-1]\)\>/
 " Including floating-point ones
 syntax match   riscvRegister /\<f\([1-2]\?[0-9]\|3[0-1]\)\>/
+" Invalid register
+syntax match   riscvBadRegister /\<\(x\([1-2]\?[0-9]\|3[0-1]\)\($\|\D\)\)\@!x[0-9]\+\>/
 
 " psABI
 " Symbolic register names
@@ -414,6 +416,7 @@ hi def link riscvString         String
 hi def link riscvChar           Character
 hi def link riscvRegister       Type
 hi def link riscvCSRegister     Function
+hi def link riscvBadRegister    Error
 hi def link riscvLabel          Label
 hi def link riscvDirective      Preproc
 hi def link riscvInstruction    Keyword
