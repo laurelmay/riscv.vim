@@ -30,8 +30,9 @@ syntax match   riscvLabelRef   /\d\+[bf]/
 syntax match   riscvRegister /\<x\([1-2]\?[0-9]\|3[0-1]\)\>/
 " Including floating-point ones
 syntax match   riscvRegister /\<f\([1-2]\?[0-9]\|3[0-1]\)\>/
-" Invalid register
+" Invalid registers
 syntax match   riscvBadRegister /\<\(x\([1-2]\?[0-9]\|3[0-1]\)\($\|\D\)\)\@!x[0-9]\+\>/
+syntax match   riscvBadRegister /\<\(f\([1-2]\?[0-9]\|3[0-1]\)\($\|\D\)\)\@!f[0-9]\+\>/
 
 " psABI
 " Symbolic register names
@@ -42,6 +43,12 @@ syntax match   riscvRegister /\<s\([0-9]\|1[01]\)\>/
 " Including floating-point ones
 syntax match   riscvRegister /\<f[st]\([0-9]\|1[01]\)\>/
 syntax match   riscvRegister /\<fa[0-7]\>/
+" Invalid ABI registers
+syntax match   riscvBadRegister /\<\(a[0-7]\($\|\D\)\)\@!a[0-9]\+\>/
+syntax match   riscvBadRegister /\<\(t[0-6]\($\|\D\)\)\@!t[0-9]\+\>/
+syntax match   riscvBadRegister /\<\(s\([0-9]\|1[01]\)\($\|\D\)\)\@!s[0-9]\+\>/
+syntax match   riscvBadRegister /\<\(f[st]\([0-9]\|1[01]\)\($\|\D\)\)\@!f[st][0-9]\+\>/
+syntax match   riscvBadRegister /\<\(fa[0-7]\($\|\D\)\)\@!fa[0-9]\+\>/
 
 " Control/Status registers (from Privileged Specification)
 " Unprivileged
