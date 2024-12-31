@@ -30,6 +30,9 @@ syntax match   riscvLabelRef   /\d\+[bf]/
 syntax match   riscvRegister /\<x\([1-2]\?[0-9]\|3[0-1]\)\>/
 " Including floating-point ones
 syntax match   riscvRegister /\<f\([1-2]\?[0-9]\|3[0-1]\)\>/
+" Invalid registers
+syntax match   riscvBadRegister /\<\(x\([1-2]\?[0-9]\|3[0-1]\)\($\|\D\)\)\@!x[0-9]\+\>/
+syntax match   riscvBadRegister /\<\(f\([1-2]\?[0-9]\|3[0-1]\)\($\|\D\)\)\@!f[0-9]\+\>/
 
 " psABI
 " Symbolic register names
@@ -40,14 +43,22 @@ syntax match   riscvRegister /\<s\([0-9]\|1[01]\)\>/
 " Including floating-point ones
 syntax match   riscvRegister /\<f[st]\([0-9]\|1[01]\)\>/
 syntax match   riscvRegister /\<fa[0-7]\>/
+" Invalid ABI registers
+syntax match   riscvBadRegister /\<\(a[0-7]\($\|\D\)\)\@!a[0-9]\+\>/
+syntax match   riscvBadRegister /\<\(t[0-6]\($\|\D\)\)\@!t[0-9]\+\>/
+syntax match   riscvBadRegister /\<\(s\([0-9]\|1[01]\)\($\|\D\)\)\@!s[0-9]\+\>/
+syntax match   riscvBadRegister /\<\(f[st]\([0-9]\|1[01]\)\($\|\D\)\)\@!f[st][0-9]\+\>/
+syntax match   riscvBadRegister /\<\(fa[0-7]\($\|\D\)\)\@!fa[0-9]\+\>/
 
 " Control/Status registers (from Privileged Specification)
 " Unprivileged
 syntax keyword riscvCSRegister fflags frm fcsr
 syntax keyword riscvCSRegister cycle time instret
 syntax match   riscvCSRegister /\<hpmcounter\([3-9]\|[1-2][0-9]\|3[0-1]\)\>/
+syntax match   riscvBadRegister /\<\(hpmcounter\([3-9]\|[1-2][0-9]\|3[0-1]\)\($\|\D\)\)\@!hpmcounter[0-9]\+\>/
 syntax keyword riscvCSRegister cycleh timeh instreth
 syntax match   riscvCSRegister /\<hpmcounter\([3-9]\|[1-2][0-9]\|3[0-1]\)h\>/
+syntax match   riscvBadRegister /\<\(hpmcounter\([3-9]\|[1-2][0-9]\|3[0-1]\)h\($\|\D\)\)\@!hpmcounter[0-9]\+h\>/
 " Supervisor-level CSR
 syntax keyword riscvCSRegister sstatus sie stvec scounteren
 syntax keyword riscvCSRegister senvcfg
@@ -68,17 +79,24 @@ syntax keyword riscvCSRegister mstatus misa medeleg mideleg mie mtvec mcounteren
 syntax keyword riscvCSRegister mscratch mepc mcause mtval mip mtinst mtval2
 syntax keyword riscvCSRegister menvcfg menvcfgh mseccfg mseccfgh
 syntax match   riscvCSRegister /\<pmpcfg\([0-9]\|1[0-5]\)\>/
+syntax match   riscvBadRegister /\<\(pmpcfg\([0-9]\|1[0-5]\)\($\|\D\)\)\@!pmpcfg[0-9]\+\>/
 syntax match   riscvCSRegister /\<pmpaddr\([0-9]\|[1-5][0-9]\|6[0-3]\)\>/
+syntax match   riscvBadRegister /\<\(pmpaddr\([0-9]\|[1-5][0-9]\|6[0-3]\)\($\|\D\)\)\@!pmpaddr[0-9]\+\>/
 syntax keyword riscvCSRegister mcycle minstret
 syntax match   riscvCSRegister /\<mhpmcounter\([3-9]\|[1-2][0-9]\|3[0-1]\)\>/
+syntax match   riscvBadRegister /\<\(mhpmcounter\([3-9]\|[1-2][0-9]\|3[0-1]\)\($\|\D\)\)\@!mhpmcounter[0-9]\+\>/
 syntax keyword riscvCSRegister mcycleh minstreth
 syntax match   riscvCSRegister /\<mhpmcounter\([3-9]\|[1-2][0-9]\|3[0-1]\)h\>/
+syntax match   riscvBadRegister /\<\(mhpmcounter\([3-9]\|[1-2][0-9]\|3[0-1]\)h\($\|\D\)\)\@!mhpmcounter[0-9]\+h\>/
 syntax keyword riscvCSRegister mcountinhibit
 syntax match   riscvCSRegister /\<mhpmevent\([3-9]\|[1-2][0-9]\|3[0-1]\)\>/
+syntax match   riscvBadRegister /\<\(mhpmevent\([3-9]\|[1-2][0-9]\|3[0-1]\)\($\|\D\)\)\@!mhpmevent[0-9]\+\>/
 syntax keyword riscvCSRegister tselect mcontext
 syntax match   riscvCSRegister /\<tdata[1-3]\>/
+syntax match   riscvBadRegister /\<\(tdata[1-3]\($\|\D\)\)\@!tdata[0-9]\+\>/
 syntax keyword riscvCSRegister dcsr dpc
 syntax match   riscvCSRegister /\<dscratch[0-1]\?\>/
+syntax match   riscvBadRegister /\<\(dscratch[0-1]\($\|\D\)\)\@!dscratch[0-9]\+\>/
 
 " Assembler directives
 syntax keyword riscvDirective .align .ascii .file .globl .local .comm .common .ident
@@ -223,7 +241,9 @@ syntax keyword riscvCSRegister  vstart vxsat vxrm vcsr vtype vl vlenb
 syntax keyword riscvOption      e8 e16 e32 e64 mf8 mf4 mf2 m1 m2 m4 m8
 syntax keyword riscvOption      ta tu ma mu
 syntax match   riscvRegister    /\<v\([1-2]\?[0-9]\|3[0-1]\)\>/
+syntax match   riscvBadRegister /\<\(v\([1-2]\?[0-9]\|3[0-1]\)\($\|\D\)\)\@!v[0-9]\+\>/
 syntax match   riscvOption      /\<v\([1-2]\?[0-9]\|3[0-1]\)\.t\>/
+syntax match   riscvBadRegister /\<\(v\([1-2]\?[0-9]\|3[0-1]\)\.t\($\|\D\)\)\@!v[0-9]\+\.t\>/
 syntax keyword riscvInstruction vsetvli vsetivli vsetvl
 syntax keyword riscvInstruction flh fsh
 syntax match   riscvInstruction /\<v[sl]s\?e\(8\|16\|32\|64\)\.v\>/
@@ -414,6 +434,7 @@ hi def link riscvString         String
 hi def link riscvChar           Character
 hi def link riscvRegister       Type
 hi def link riscvCSRegister     Function
+hi def link riscvBadRegister    Error
 hi def link riscvLabel          Label
 hi def link riscvDirective      Preproc
 hi def link riscvInstruction    Keyword
