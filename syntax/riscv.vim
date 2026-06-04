@@ -21,9 +21,10 @@ syntax match   riscvNumber     /\<-\?0\(x\|X\)[0-9a-fA-F]\+\>/
 syntax region  riscvString     start=/"/ skip=/\\"/ end=/"/
 syntax region  riscvChar       start=/'/ skip=/\\'/ end=/'/
 syntax match   riscvLabelColon /:/ contained
-syntax match   riscvLabel      /\w\+:/ contains=riscvLabelColon
+syntax match   riscvLabel      /^\s*\.\?\h\w*:/ contains=riscvLabelColon
+syntax match   riscvLabel      /^\s*\d\+:/ contains=riscvLabelColon
 " A reference to a local label using <num>[BF]
-syntax match   riscvLabelRef   /\d\+[bf]/
+syntax match   riscvLabelRef   /\<\d\+[bf]\>/
 
 " Registers
 " Numbered registers
@@ -106,6 +107,9 @@ syntax keyword riscvDirective .4byte .word .long .8byte .dword .quad .skip
 syntax keyword riscvDirective .dtprelword .dtpreldword .sleb128 .uleb128
 syntax keyword riscvDirective .p2align .balign
 syntax keyword riscvDirective .global .float .double .set .attribute
+syntax keyword riscvDirective .cfi_sections .cfi_startproc .cfi_endproc .cfi_def_cfa
+syntax keyword riscvDirective .cfi_offset .cfi_def_cfa_offset .cfi_restore
+syntax keyword riscvDirective .octa .debug_frame .loc .weak
 
 " RV32I
 " Integer Register-Immediate Instructions
